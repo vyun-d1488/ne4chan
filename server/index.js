@@ -4,6 +4,8 @@ const bodyParser = require("koa-body")();
 const redis = require("redis");
 const bluebird = require("bluebird");
 
+// const routes = require("./src/routes/routes");
+
 bluebird.promisifyAll(redis.RedisClient.prototype);
 const db = redis.createClient();
 
@@ -13,31 +15,32 @@ const Router = require("koa-router");
 const server = new Koa();
 const router = new Router();
 
-const Port = process.env.Port || 80;
+const Port = 3001;
 
-router.get("/", async ctx => {
-
+router.get("/", async (ctx) => {
 	ctx.body = "IO SDX";
 
 	await db.setAsync("WISP", "IO ONE LOVE");
-
 });
 
-router.post("/", bodyParser, ctx => {
-
+router.get("/learn", async (ctx) => {
 	ctx.body = {
+		Title: "ЧТО",
+		Content: "РАБОТАЕТ?",
+	};
+});
 
-		data: ctx.request.body
+router.post("/", bodyParser, (ctx) => {
+	ctx.body = {
+		data: ctx.request.body,
+	};
+});
 
-	}
-
-})
-
-
-server.use(logger())
+server
+	.use(logger())
 
 	.use(router.routes())
-	
+
 	.use(static("public"))
-	
+
 	.listen(Port);

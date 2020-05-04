@@ -1,29 +1,14 @@
 {
+	"scripts": {
+		"start": "concurrently \"cd server && yarn start\" \"cd client && yarn start\""
+	},
+	"dependencies": {
+		"concurrently": "^5.2.0"
+	},
 	"name": "228chan",
 	"version": "1.0.0",
-	"description": "",
 	"main": "index.js",
-	"scripts": {
-		"start": "node index.js",
-		"dev": "nodemon index.js"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/vyun-d1488/ne4chan.git"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/vyun-d1488/ne4chan/issues"
-	},
-	"homepage": "https://github.com/vyun-d1488/ne4chan#readme",
-	"dependencies": {
-		"bluebird": "^3.7.2",
-		"koa-body": "^4.1.1",
-		"koa-router": "^8.0.8",
-		"koa-static": "^5.0.0",
-		"nodemon": "^2.0.3",
-		"redis": "^3.0.2"
-	}
+	"repository": "https://github.com/vyun-d1488/ne4chan.git",
+	"author": "psinadog <ilyaspiypiy@gmail.com>",
+	"license": "MIT"
 }
