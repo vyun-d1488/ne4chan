@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import TextField from "@material-ui/core/TextField";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
@@ -10,51 +11,73 @@ import Typography from "@material-ui/core/Typography";
 
 const style = {
 	margin: 100,
+	padding: 10,
 	borderRadius: 0,
-	cardMedia: {
-		height: 500,
+	textField: {
 		width: 400,
 	},
 };
 
 class App extends Component {
+	constructor() {
+		super();
+		this.state = {
+			ThreadBtn: "Создать тред",
+			newPostTitle: "",
+			newPostText: "",
+			newPostImage: "",
+		};
+	}
+
+	componentDidMount() {
+		fetch("/learn").then(async (response) => {
+			console.log(await response.json());
+			this.props.fetchUser();
+		});
+	}
+
+	submit(event) {
+		console.log("To send: " + this.state);
+	}
+
 	render() {
 		return (
-			<Card style={style}>
-				<CardActionArea>
-					<CardMedia style={style.cardMedia} image="https://sun9-15.userapi.com/1_kVwT8NfsVuIDum-d4zBzT1-VG6UncnBElrhQ/3itJrSQe4bA.jpg" title="Contemplative Reptile" />
-					<CardContent>
-						<Typography gutterBottom variant="h5" component="h2">
-							{this.props.Title}
-						</Typography>
-						<Typography variant="body2" color="textSecondary" component="p">
-							{this.props.Content}
-						</Typography>
-					</CardContent>
-				</CardActionArea>
-				<CardActions>
-					<Button size="small" color="primary">
-						Like
+			<div>
+				<Card style={style}>
+					<Button size="small" color="primary" onClick={this.props.toggleThreadBtn}>
+						{this.props.btnState}
 					</Button>
-					<Button size="small" color="primary">
-						Dislike
-					</Button>
-					<Button size="small" color="primary" onClick={this.props.onClickLearn}>
-						Get server's msg
-					</Button>
-				</CardActions>
-			</Card>
+				</Card>
+				<form action="/thread" method="POST">
+					<Card style={style}>
+						<div>
+							<TextField style={style.textField} label="Тема" id="margin-none" />
+						</div>
+						<div>
+							<TextField style={style.textField} id="filled-multiline-static" label="Комментарии к треду" multiline rows={4} variant="filled" />
+						</div>
+						<CardActions>
+							<Button size="small" color="primary" onClick={this.submit.bind(this)}>
+								Отправить
+							</Button>
+							<p>{this.props.Title}</p>
+						</CardActions>
+					</Card>
+				</form>
+			</div>
 		);
 	}
 }
 
 const mapStateToProps = (state) => ({
-	Title: state.get("Title"),
-	Content: state.get("Content"),
+	Title: state.get("reducer").get("Title"),
+	Content: state.get("reducer").get("Content"),
+	btnState: state.get("threadReducer").get("btnState"),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-	onClickLearn: () => dispatch({ type: "LEARN MORE" }),
+	fetchUser: () => dispatch({ type: "FETCH USER SUCCESS" }),
+	toggleThreadBtn: () => dispatch({ type: "TOGGLE THREAD BTN" }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

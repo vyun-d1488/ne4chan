@@ -4,21 +4,23 @@ import { createEpicMiddleware } from "redux-observable";
 import { ajax } from "rxjs/ajax";
 import { mergeMap, map } from "rxjs/operators";
 import { ofType } from "redux-observable";
+import { combineReducers } from "redux-immutable";
 
 const fetchUserFulfilled = (payload) => ({ type: "LEARN MORE FULFILLED", payload });
 
 const fetchUserEpic = (action$) =>
 	action$.pipe(
-		ofType("LEARN MORE"),
+		ofType("FETCH USER SUCCESS"),
 		mergeMap((action) => ajax.getJSON(`/learn`).pipe(map((response) => fetchUserFulfilled(response))))
 	);
 
-const initialState = new Map({
-	Title: "Title",
-	Content: "Content",
-});
-
-const reducer = (state = initialState, action) => {
+const reducer = (
+	state = Map({
+		Title: "",
+		Content: "",
+	}),
+	action
+) => {
 	switch (action.type) {
 		case "LEARN MORE FULFILLED":
 			return state.set("Title", action.payload.Title).set("Content", action.payload.Content);
@@ -27,9 +29,28 @@ const reducer = (state = initialState, action) => {
 	}
 };
 
+const threadReducer = (
+	state = Map({
+		btnState: "Создать тред",
+	}),
+	action
+) => {
+	switch (action.type) {
+		case "TOGGLE THREAD BTN":
+			const currentState = state.get("btnState").toLowerCase() === "создать тред" ? "закрыть тред" : "создать тред";
+			return state.set("btnState", currentState);
+		default:
+			return state;
+	}
+};
+
+const rootReducer = combineReducers({ reducer, threadReducer });
+
 const epicMiddleware = createEpicMiddleware();
 const enhancer = applyMiddleware(epicMiddleware);
-const store = createStore(reducer, enhancer);
+const store = createStore(rootReducer, enhancer);
 epicMiddleware.run(fetchUserEpic);
+
+console.log(JSON.stringify(store.getState()));
 
 export default store;

@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import "typeface-roboto";
 import { Provider } from "react-redux";
 import "./main.css";
-import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import App from "./App";
 import store from "./Store";
 import * as serviceWorker from "./serviceWorker";
