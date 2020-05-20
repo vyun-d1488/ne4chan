@@ -13,11 +13,9 @@ class Threads extends Component {
 	// 	});
 	// }
 	render() {
-		const { threadList } = this.state;
 		return (
 			<div>
 				<p>Works</p>
-				{this.state}
 			</div>
 		);
 	}
