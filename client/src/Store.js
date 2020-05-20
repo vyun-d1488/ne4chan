@@ -29,26 +29,9 @@ const reducer = (
 	}
 };
 
-const threadReducer = (
-	state = Map({
-		btnState: "Создать тред",
-	}),
-	action
-) => {
-	switch (action.type) {
-		case "TOGGLE THREAD BTN":
-			const currentState = state.get("btnState").toLowerCase() === "создать тред" ? "закрыть тред" : "создать тред";
-			return state.set("btnState", currentState);
-		default:
-			return state;
-	}
-};
-
-const rootReducer = combineReducers({ reducer, threadReducer });
-
 const epicMiddleware = createEpicMiddleware();
 const enhancer = applyMiddleware(epicMiddleware);
-const store = createStore(rootReducer, enhancer);
+const store = createStore(reducer, enhancer);
 epicMiddleware.run(fetchUserEpic);
 
 console.log(JSON.stringify(store.getState()));

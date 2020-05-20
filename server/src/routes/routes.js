@@ -10,6 +10,21 @@ router.get("/", async (ctx) => {
 	await db.setAsync("WISP", "IO ONE LOVE");
 });
 
+router.get("/thread", async (ctx) => {
+	ctx.body = [
+		{
+			Title: "Title",
+			Content: "Content",
+			Image: "1",
+		},
+		{
+			Title: "Title2",
+			Content: "Content2",
+			Image: "2",
+		},
+	];
+});
+
 router.get("/learn", async (ctx) => {
 	ctx.body = {
 		Title: Math.floor(Math.random() * 10),
@@ -17,7 +32,7 @@ router.get("/learn", async (ctx) => {
 	};
 });
 
-router.post("/", bodyParser({ multipart: true }), (ctx) => {
+router.post("/thread", bodyParser({ multipart: true }), (ctx) => {
 	ctx.body = {
 		data: ctx.request.body,
 	};

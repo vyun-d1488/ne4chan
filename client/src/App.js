@@ -2,31 +2,22 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import TextField from "@material-ui/core/TextField";
 import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
 import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
 
 const style = {
-	margin: 100,
-	padding: 10,
-	borderRadius: 0,
-	textField: {
-		width: 400,
+	width: "100%",
+	Main: {
+		width: "100%",
+	},
+	Card: {
+		boxShadow: "0 0 0 0",
 	},
 };
 
 class App extends Component {
 	constructor() {
 		super();
-		this.state = {
-			ThreadBtn: "Создать тред",
-			newPostTitle: "",
-			newPostText: "",
-			newPostImage: "",
-		};
 	}
 
 	componentDidMount() {
@@ -36,31 +27,54 @@ class App extends Component {
 		});
 	}
 
-	submit(event) {
-		console.log("To send: " + this.state);
+	submit() {
+		let formData = new FormData();
+		formData.append("threadTitle", this.state.newPostTitle);
+		formData.append("threadText", this.state.newPostText);
+		fetch("thread", {
+			method: "POST",
+			body: formData,
+		})
+			.then((response) => response.json())
+			.then((json) => console.log(json));
 	}
 
 	render() {
 		return (
-			<div>
-				<Card style={style}>
-					<Button size="small" color="primary" onClick={this.props.toggleThreadBtn}>
-						{this.props.btnState}
-					</Button>
-				</Card>
-				<form action="/thread" method="POST">
-					<Card style={style}>
+			<div style={style.Main}>
+				<form action="/thread" method="POST" className="createThreadForm">
+					<Card style={style.Card}>
 						<div>
-							<TextField style={style.textField} label="Тема" id="margin-none" />
+							<TextField
+								style={style}
+								label="Тема"
+								id="margin-none"
+								onChange={(event) => {
+									this.setState({
+										newPostTitle: event.target.value,
+									});
+								}}
+							/>
 						</div>
 						<div>
-							<TextField style={style.textField} id="filled-multiline-static" label="Комментарии к треду" multiline rows={4} variant="filled" />
+							<TextField
+								style={style}
+								id="filled-multiline-static"
+								label="Комментарии к треду"
+								multiline
+								rows={4}
+								variant="filled"
+								onChange={(event) => {
+									this.setState({
+										newPostText: event.target.value,
+									});
+								}}
+							/>
 						</div>
 						<CardActions>
 							<Button size="small" color="primary" onClick={this.submit.bind(this)}>
 								Отправить
 							</Button>
-							<p>{this.props.Title}</p>
 						</CardActions>
 					</Card>
 				</form>
@@ -70,14 +84,12 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => ({
-	Title: state.get("reducer").get("Title"),
-	Content: state.get("reducer").get("Content"),
-	btnState: state.get("threadReducer").get("btnState"),
+	Title: state.get("Title"),
+	Content: state.get("Content"),
 });
 
 const mapDispatchToProps = (dispatch) => ({
 	fetchUser: () => dispatch({ type: "FETCH USER SUCCESS" }),
-	toggleThreadBtn: () => dispatch({ type: "TOGGLE THREAD BTN" }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
